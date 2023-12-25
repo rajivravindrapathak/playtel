@@ -18,29 +18,60 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
 
-// Socket.io connection
-io.on('connection', (socket) => {
-    // console.log('A new user has connected', socket.id);
+// // Socket.io connection
+// io.on('connection', (socket) => {
+//     // console.log('A new user has connected', socket.id);
 
-    // message coming from user
-    socket.on("user-message", (message) => {
-        console.log("A New User Message", message)
-        // send to all
-        io.emit("message", message)   
-    })
+//     // message coming from user
+//     socket.on("user-message", (message) => {
+//         console.log("A New User Message", message)
+//         // send to all
+//         io.emit("message", message)   
+//     })
 
-    // Handle socket events here
-    socket.on('disconnect', () => {
-        console.log('User disconnected', socket.id);
+//     // Handle socket events here
+//     socket.on('disconnect', () => {
+//         console.log('User disconnected', socket.id);
+//     });
+// });
+
+app.get('/', (req, res) => {
+    // Send the WebSocket server URL as part of the response
+    console.log('called');
+  // Set a timeout for a specific event
+  // const timeoutDuration = 5000; // 5 seconds in milliseconds
+  // let eventTimeout;
+    io.on('connection', (socket) => {
+        console.log('User Connected');
+
+        // Listen for connection error
+        socket.on('error', (error) => {
+            console.error('Connection error:', error);
+        });
+
+        // Start the timer when the event is received
+        // eventTimeout = setTimeout(() => {
+        //   // Handle the timeout here
+        //   console.log('Custom event timeout');
+        //   // You can emit an error or perform other actions
+        // }, timeoutDuration);
+    
+        // ChatController.sendChatMessage(io, socket);
+        // socket.on('disconnect', () => {
+        //     console.log('User disconnected');
+        //     // clearTimeout(eventTimeout); // Clear the timeout when the user disconnects
+        // });
     });
+    // const websocketUrl = `wss://${req.headers.host}`;
+    // res.json({ message: 'API is running', websocketUrl });
 });
 
-// // only for check index.html file
-const path = require('path')
-app.use(express.static(path.resolve("./public")))
-app.get('/', (req, res) => {
-    return res.sendFile('/public/index.html')
-})
+// // // only for check index.html file
+// const path = require('path')
+// app.use(express.static(path.resolve("./public")))
+// app.get('/', (req, res) => {
+//     return res.sendFile('/public/index.html')
+// })
 
 // app.get('/', (req, res) => {
 //     res.send("api is running")
