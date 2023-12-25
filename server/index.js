@@ -16,7 +16,13 @@ require("dotenv").config()
 
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server)
+// const io = new Server(server)
+
+const io = require('socket.io')(server, {
+    cors: {
+        origin: '*',
+    },
+});
 
 // // Socket.io connection
 // io.on('connection', (socket) => {
@@ -38,9 +44,9 @@ const io = new Server(server)
 app.get('/', (req, res) => {
     // Send the WebSocket server URL as part of the response
     console.log('called');
-  // Set a timeout for a specific event
-  // const timeoutDuration = 5000; // 5 seconds in milliseconds
-  // let eventTimeout;
+    // Set a timeout for a specific event
+    // const timeoutDuration = 5000; // 5 seconds in milliseconds
+    // let eventTimeout;
     io.on('connection', (socket) => {
         console.log('User Connected');
 
