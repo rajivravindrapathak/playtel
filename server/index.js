@@ -44,6 +44,7 @@ const io = require('socket.io')(server, {
 app.get('/', (req, res) => {
     // Send the WebSocket server URL as part of the response
     console.log('called');
+    res.send("api is running")
     // Set a timeout for a specific event
     // const timeoutDuration = 5000; // 5 seconds in milliseconds
     // let eventTimeout;
