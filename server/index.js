@@ -42,6 +42,10 @@ io.on('connection', (socket) => {
 //     return res.sendFile('/public/index.html')
 // })
 
+app.get('/', (req, res) => {
+    res.send("api is running")
+})
+
 const PORT = process.env.PORT || 2001       
 
 app.use(express.json())  
