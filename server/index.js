@@ -35,12 +35,12 @@ io.on('connection', (socket) => {
     });
 });
 
-// only for check index.html file
-const path = require('path')
-app.use(express.static(path.resolve("./public")))
-app.get('/', (req, res) => {
-    return res.sendFile('/public/index.html')
-})
+// // only for check index.html file
+// const path = require('path')
+// app.use(express.static(path.resolve("./public")))
+// app.get('/', (req, res) => {
+//     return res.sendFile('/public/index.html')
+// })
 
 const PORT = process.env.PORT || 2001       
 
