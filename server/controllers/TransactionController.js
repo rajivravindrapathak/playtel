@@ -5,11 +5,13 @@ exports.addTransaction = async function (req, res) {
     try {
         const { playerId, amount, txnDateTime, type, txnBy } = req.body;
 
+        const parsedTxnDateTime = new Date(txnDateTime);
+
         // Create a new instance of the TournamentModel
         const newTransaction = new TransactionModel({
             playerId, 
             amount, 
-            txnDateTime,
+            txnDateTime: parsedTxnDateTime,
             type, 
             txnBy,
             // notes,
@@ -31,7 +33,6 @@ exports.getTransaction = async function (rea, res) {
     try {
         // Fetch all tournament from the database
         const transaction = await TransactionModel.find();
-
         // Respond with the list of tournament
         res.status(200).json({ msg: 'sucessfull', transaction });  
     } catch (error) {

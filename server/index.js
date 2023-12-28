@@ -4,13 +4,16 @@ const cors = require('cors')
 const http = require("http")
 const { Server } = require("socket.io");
 
+const playerDetailsController = require('./controllers/PlayerDetailsController')
+
 const { connection } = require('./config/db')
-const userRoutes  = require('./routes/UserRoutes')
+const userRoutes = require('./routes/UserRoutes')
+const adminRoutes  = require('./routes/AdminRoutes')
 const PlayerRoutes  = require('./routes/PlayerRoutes')
+const playerDetailsRoutes = require('./routes/playerDetailsRoutes')
 const tournamentRoutes  = require('./routes/TournamentRoutes')
 const transactionRoutes  = require('./routes/TransactionRoutes')
 const noticeRoutes = require('./routes/NoticeRoutes')     
-
 
 require("dotenv").config()
 
@@ -18,11 +21,6 @@ const app = express()
 const server = http.createServer(app)
 // const io = new Server(server)
 
-const io = require('socket.io')(server, {
-    cors: {
-        origin: '*',
-    },
-});
 
 // // Socket.io connection
 // io.on('connection', (socket) => {
@@ -41,10 +39,25 @@ const io = require('socket.io')(server, {
 //     });
 // });
 
+const io = require('socket.io')(server, {
+    cors: {
+        origin: '*',
+    },
+});
+
+io.use((socket, next) => {
+    if (socket.handshake.query.token === "UNITY") {
+        next();
+    } else {
+        next(new Error("Authentication error"));
+    }
+});
+
 app.get('/', (req, res) => {
     // Send the WebSocket server URL as part of the response
     console.log('called');
     res.send("api is running")
+    
     // Set a timeout for a specific event
     // const timeoutDuration = 5000; // 5 seconds in milliseconds
     // let eventTimeout;
@@ -56,42 +69,47 @@ app.get('/', (req, res) => {
             console.error('Connection error:', error);
         });
 
-        // Start the timer when the event is received
-        // eventTimeout = setTimeout(() => {
-        //   // Handle the timeout here
-        //   console.log('Custom event timeout');
-        //   // You can emit an error or perform other actions
-        // }, timeoutDuration);
+
+        // // message coming from user
+        // socket.on("user-message", (message) => {
+        //     console.log("A New User Message", message)
+        //     // send to all
+        //     io.emit("message", message)   
+        // })
     
-        // ChatController.sendChatMessage(io, socket);
-        // socket.on('disconnect', () => {
-        //     console.log('User disconnected');
-        //     // clearTimeout(eventTimeout); // Clear the timeout when the user disconnects
-        // });
+        ChatController.sendChatMessage(io, socket);
+        playerDetailsController(io, socket)
+
+        socket.on('disconnect', () => {
+            console.log('User disconnected');
+            // clearTimeout(eventTimeout); // Clear the timeout when the user disconnects
+        });
     });
-    // const websocketUrl = `wss://${req.headers.host}`;
-    // res.json({ message: 'API is running', websocketUrl });
+
 });
 
-// // // only for check index.html file
+// // only for check index.html file
 // const path = require('path')
 // app.use(express.static(path.resolve("./public")))
 // app.get('/', (req, res) => {
 //     return res.sendFile('/public/index.html')
 // })
 
-// app.get('/', (req, res) => {
-//     res.send("api is running")
-// })
 
 const PORT = process.env.PORT || 2001       
 
+app.use(express.urlencoded({limit: '25mb', extended: true}));
 app.use(express.json())  
 app.use(cors()) 
+// Increase the payload limit (e.g., 10MB)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // define api Routes
 app.use('/user', userRoutes)
+app.use('/admin', adminRoutes)
 app.use('/player', PlayerRoutes)
+app.use('/playerdetails', playerDetailsRoutes)
 app.use('/tournament', tournamentRoutes)   
 app.use('/transaction', transactionRoutes)  
 app.use('/notice', noticeRoutes) 

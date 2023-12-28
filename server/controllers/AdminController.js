@@ -1,9 +1,11 @@
-const { UserModel } = require('../models/UserModel');
+const { AdminModel } = require('../models/AdminModel');
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
 
 exports.signUp = async function (req, res) {
     const { username, email, password } = req.body
 
-    const isUser = await UserModel.findOne({ email })
+    const isUser = await AdminModel.findOne({ email })
     if(isUser) {
         res.send({ msg : "user already exits please login", isUser })
     } else {
@@ -12,7 +14,7 @@ exports.signUp = async function (req, res) {
                 res.send({ msg: "something went wrong, plz try again later", err })
             } 
             else {
-                const user = new UserModel({  
+                const user = new AdminModel({  
                     username,  
                     email,  
                     password: hash
@@ -29,11 +31,10 @@ exports.signUp = async function (req, res) {
     }   
 }
 
-
 exports.login = async function (req, res) {
     const { email, password } = req.body;
 
-    const user = await UserModel.findOne({ email });
+    const user = await AdminModel.findOne({ email });
   
     if (!user) {
       return res.status(401).json({ msg: 'Invalid credentials' });
@@ -48,22 +49,3 @@ exports.login = async function (req, res) {
       return res.status(401).json({ msg: 'Invalid credentials' });
     }
 };
-
-
-
-    // debugger  
-    // const { email, password } = req.body
-
-    // const user = await UserModel.findOne({email})
-    // const hash = user.password
-    // bcrypt.compare(password, hash, function(err, result) {
-    //     if(err) {
-    //         res.status(500).send({ msg: "something went wrong, plz try again later", err })
-    //     }
-    //     if(result) {
-    //         const token = jwt.sign({ userId: user._id}, process.env.JWT_SECRET)
-    //         res.json({ msg: "Login successful", token, userId: user._id })
-    //     } else {
-    //         res.status(401).send({ msg: "Invalid credential" })
-    //     }
-    // });
