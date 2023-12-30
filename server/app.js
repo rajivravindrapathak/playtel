@@ -39,6 +39,14 @@ app.use('/tournament', tournamentRoutes)
 app.use('/transaction', transactionRoutes)  
 app.use('/notice', noticeRoutes) 
 
+io.use((socket, next) => {
+  if(socket.handshake.query.token === "UNITY") {
+      next();
+  } else {
+      next(new Error("Authentication error"));
+  }
+});
+
 initializeSocketIO(io)
 
 httpServer.listen(PORT, () => {
