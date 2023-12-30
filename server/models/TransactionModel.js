@@ -8,8 +8,7 @@ const TransactionSchema = mongoose.Schema({
     txnBy: { type: String, required: true },
     // notes: { type: String, required: true },
     // walletType: { type: String, required: true },
-    // userId: { type: String, required: true }
-    
+    // userId: { type: String, required: true } 
 },
 // {
 //     timestamps: true, // This will add createdAt and updatedAt fields

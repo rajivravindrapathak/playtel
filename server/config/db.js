@@ -1,7 +1,12 @@
 const mongoose = require('mongoose')
 
-require("dotenv").config()
+const dbURI = 'mongodb+srv://rajivpathak199:rajiv199@cluster0.m6krzpo.mongodb.net/angelLudo';
 
-const connection = mongoose.connect(process.env.MONGO_URL)
+module.exports=function dbConnection(){
+mongoose.connect(dbURI)
+    console.log("connected to database")
+}
 
-module.exports = { connection}
+
+
+    

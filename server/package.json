@@ -1,11 +1,10 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon index.js"
+    "server": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -25,5 +24,6 @@
     "path": "^0.12.7",
     "socket.io": "^4.7.2",
     "uuid": "^9.0.1"
-  }
+  },
+  "description": ""
 }
